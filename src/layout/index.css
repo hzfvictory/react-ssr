@@ -1,0 +1,31 @@
+
+.ant-layout-header .logo {
+    width: 120px;
+    height: 31px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px 24px 16px 0;
+    float: left;
+}
+
+.site-layout .site-layout-background {
+    background: #fff;
+}
+
+.userSet {
+    height: 56px;
+    float: right;
+}
+
+.userSet > span {
+    display: inline-block;
+    height: 100%;
+    padding: 0 12px;
+    transition: all .3s;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.userSet .avatar {
+    width: 24px;
+    height: 24px;
+    margin-right: 7px;
+}
