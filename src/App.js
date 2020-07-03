@@ -8,7 +8,7 @@ import store from './models/dva';
 
 import 'antd/dist/antd.css';
 
-function App() {
+function App(props) {
   return (
     <Provider store={store}>
       <Router>

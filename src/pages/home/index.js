@@ -1,11 +1,17 @@
-import React, {Fragment, useState} from "react"
+import React, {Fragment, useState, useEffect} from "react"
 import {Table, Avatar} from "antd"
+import {Link} from "react-router-dom"
+import {Helmet} from 'react-helmet';
 import {useFetch} from "@/hooks"
-import "./index.css"
+import useStyles from 'isomorphic-style-loader/useStyles'
+import styles from "./index.css"
 
-const Index = () => {
+
+const Index = (props) => {
   const [current, setCurrent] = useState(1)
   const [{data, isLoading}, setUrl] = useFetch('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true', {})
+
+  useStyles(styles)
 
 
   const columns = [
@@ -41,7 +47,7 @@ const Index = () => {
       title: '操作',
       render: () => {
         return (
-          <a href="/menu/message">编辑</a>
+          <Link to="/menu/message">编辑</Link>
         )
       }
     },
@@ -59,6 +65,27 @@ const Index = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>这是home页</title>
+        <meta name="description" content="这里是禾口和react-ssr的调研"/>
+      </Helmet>
+
+      <h1 className={styles.hhh}>测1试</h1>
+      <h1 style={{color: 'red'}}>测11112试</h1>
+      <ul>
+        <li>9999999999</li>
+        <li>1121212121212</li>
+        <li>1212121</li>
+        <li>1121212121212</li>
+        <li>1121212121212</li>
+        <li>1121212121212</li>
+        <li>1121212121212</li>
+        <li>1121212121212</li>
+        <li>1121212121212</li>
+        <li>1212121</li>
+        <li>1121212121212</li>
+        <li>1121212121212</li>
+      </ul>
       <Table rowSelection={rowSelection}
              locale={{emptyText: '暂无数据'}}
              rowKey="id"

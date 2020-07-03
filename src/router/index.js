@@ -1,4 +1,4 @@
-import withLoadable from "../utils/withLoadable"
+import withLoadable from "@/utils/withLoadable"
 
 const Login = withLoadable(() => import('@/pages/login'))
 

@@ -1,0 +1,13 @@
+require('@babel/register')({
+  babelrc: false,
+  presets: ['@babel/preset-env'],
+  plugins: ["@babel/plugin-transform-runtime"]
+});
+
+const app = require("./server")
+
+app.listen('8082', () => {
+  console.log(`http://localhost:8082`)
+})
+
+

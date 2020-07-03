@@ -1,5 +1,5 @@
 const path = require('path');
-const {override, addWebpackAlias} = require('customize-cra');
+const {override, addWebpackAlias, addDecoratorsLegacy} = require('customize-cra');
 const WebpackBar = require('webpackbar');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -29,5 +29,6 @@ module.exports = override(
   addWebpackAlias({
     '@': path.resolve(__dirname, 'src'),
     'src': path.resolve(__dirname, 'src')
-  })
+  }),
+  addDecoratorsLegacy(["@babel/plugin-proposal-decorators", {"legacy": true}]),
 );
