@@ -13,7 +13,6 @@ const Index = (props) => {
 
   useStyles(styles)
 
-
   const columns = [
     {
       title: 'id',

@@ -1,1 +1,5 @@
-export default [];
+import menu from './menu';
+
+export default [
+  menu
+];

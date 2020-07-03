@@ -19,7 +19,7 @@ export const renderHTML = (content, store, css, helmet) => `
       <div id="root">${content}</div>
       <script>
         window.context = {
-          state: ${JSON.stringify(store)}
+          state: ${JSON.stringify(store.getState())}
         }
       </script>
       <script src=/${path[path.length - 1]}></script>

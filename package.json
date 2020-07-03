@@ -10,7 +10,7 @@
     "dev": "npm-run-all --parallel dev:**",
     "dev:build:client": "webpack --config config/webpack.client.js --watch",
     "dev:build:server": "webpack --config config/webpack.server.js --watch",
-    "dev:start1": "nodemon ./dist/bundle.js"
+    "dev:start": "nodemon ./dist/bundle.js"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
@@ -26,7 +26,6 @@
     "react-helmet": "^6.1.0",
     "react-loadable": "^5.5.0",
     "react-redux": "^7.2.0",
-    "react-router": "^5.2.0",
     "react-router-config": "^5.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",

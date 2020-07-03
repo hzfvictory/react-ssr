@@ -22,7 +22,7 @@ function createApp(opt) {
   dispatch = store.dispatch;
 
   app.dispatch = dispatch;
-  window.g_app = app;
+  // window.g_app = app;
   return app;
 }
 

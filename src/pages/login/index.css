@@ -1,7 +1,9 @@
-ul li{
+ul li {
     list-style-type: none;
+    text-align: left;
+}
+
+h1 {
     text-align: center;
-  }
-  h1{
-    text-align: right;
-  }
+    color: cadetblue;
+}

@@ -7,7 +7,9 @@ import Loadable from 'react-loadable';
 import {renderRoutes, matchRoutes} from "react-router-config";
 import StyleContext from 'isomorphic-style-loader/StyleContext'
 import {Helmet} from 'react-helmet';
+import {Provider} from 'react-redux';
 
+import store from '@/models/dva';
 import routes from '@/router';
 import {renderHTML} from "./tem"
 
@@ -30,13 +32,15 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], (ctx) => {
   const helmet = Helmet.renderStatic();
 
   const content = renderToString(
-    <StaticRouter location={ctx.path}>
-      <StyleContext.Provider value={{insertCss}}>
-        {renderRoutes(routes.routes)}
-      </StyleContext.Provider>
-    </StaticRouter>
+    <Provider store={store}>
+      <StaticRouter location={ctx.path}>
+        <StyleContext.Provider value={{insertCss}}>
+          {renderRoutes(routes.routes)}
+        </StyleContext.Provider>
+      </StaticRouter>
+    </Provider>
   )
-  ctx.body = renderHTML(content, {}, css, helmet)
+  ctx.body = renderHTML(content, store, css, helmet)
 })
 
 // 中间件
