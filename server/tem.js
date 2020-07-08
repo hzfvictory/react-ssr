@@ -1,3 +1,4 @@
+const serialize = require('serialize-javascript');
 const glob = require('glob');
 let project = glob.sync(process.cwd() + '/static/index.*.js');
 
@@ -8,6 +9,7 @@ export const renderHTML = (content, store, css, helmet) => `
     <html lang="zh-Hans-CN">
       <head>
         <meta charset="utf-8">
+        <title>默认的title</title>
         ${helmet.title.toString()}
         ${helmet.meta.toString()}
         <link crossorigin="anonymous" integrity="sha384-Jg7O5iqDY+MgWnGoX092oaWHFZ1ptLfYcsV+Pz1lcZ3QjJGpnpDvlCWnhp08Cc2L" href="https://lib.baomitu.com/antd/4.3.5/antd.compact.css" rel="stylesheet">
@@ -19,7 +21,7 @@ export const renderHTML = (content, store, css, helmet) => `
       <div id="root">${content}</div>
       <script>
         window.context = {
-          state: ${JSON.stringify(store.getState())}
+          state: ${serialize(store.getState())}
         }
       </script>
       <script src=/${path[path.length - 1]}></script>
@@ -28,5 +30,3 @@ export const renderHTML = (content, store, css, helmet) => `
 `
 
 // <link crossorigin="anonymous" integrity="sha384-Jg7O5iqDY+MgWnGoX092oaWHFZ1ptLfYcsV+Pz1lcZ3QjJGpnpDvlCWnhp08Cc2L" href="https://lib.baomitu.com/antd/4.3.5/antd.compact.css" rel="stylesheet">
-
-// state: ${JSON.stringify(store.getState())}

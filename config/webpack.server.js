@@ -5,7 +5,6 @@ const config = require('./webpack.base')
 const {OUTPUTSERVER, OUTPUTCLIENT} = require("./outputPath")
 
 const outputPath = `../${OUTPUTSERVER}`
-
 const serverConfig = {
   target: 'node',
   mode: 'development',

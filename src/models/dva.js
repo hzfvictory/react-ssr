@@ -26,11 +26,23 @@ function createApp(opt) {
   return app;
 }
 
-
+// 服务端的redux
 const dvaApp = createApp({
   initialState: {},
   models: models,
 });
-const stores = dvaApp.getStore();
+export const getStore = () => {
+  return dvaApp.getStore();
+}
 
-export default stores
+// 客户端的redux
+export const getClientStore = () => {
+  // 需要先拿到服务端的数据
+  const initialState = window.context ? window.context.state : {};
+  const dvaClientApp = createApp({
+    initialState,
+    models: models,
+  });
+
+  return dvaClientApp.getStore();
+}

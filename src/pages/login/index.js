@@ -15,10 +15,15 @@ class Index extends Component {
 
 
   resetRouter = () => {
-    const {dispatch} = this.props;
+    const {dispatch, routes} = this.props;
+    console.log(routes, 'login页面');
     dispatch({
       type: "menuTree/reset",
     });
+  }
+
+  componentDidMount() {
+    console.log(1212);
   }
 
   render() {
@@ -52,4 +57,10 @@ class Index extends Component {
   }
 }
 
+Index.loadData = async (store) => {
+  store.dispatch({
+    type: "menuTree/reset",
+  });
+  console.log('我试试这个到底加载不');
+}
 export default Index

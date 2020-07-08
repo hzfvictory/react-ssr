@@ -1,26 +1,15 @@
 exports.ids = [3];
 exports.modules = {
 
-/***/ "./src/assets/images/img.jpeg":
-/*!************************************!*\
-  !*** ./src/assets/images/img.jpeg ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("module.exports = \"/cfc95342627b53f3c708bffc73fe2e02.jpeg\";\n\n//# sourceURL=webpack:///./src/assets/images/img.jpeg?");
-
-/***/ }),
-
-/***/ "./src/pages/message/index.jsx":
-/*!*************************************!*\
-  !*** ./src/pages/message/index.jsx ***!
-  \*************************************/
+/***/ "./src/pages/404/index.js":
+/*!********************************!*\
+  !*** ./src/pages/404/index.js ***!
+  \********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _assets_images_img_jpeg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/assets/images/img.jpeg */ \"./src/assets/images/img.jpeg\");\n/* harmony import */ var _assets_images_img_jpeg__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_assets_images_img_jpeg__WEBPACK_IMPORTED_MODULE_1__);\n\n\n\nvar Index = function Index() {\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__[\"Fragment\"], null, \"message\", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"img\", {\n    src: _assets_images_img_jpeg__WEBPACK_IMPORTED_MODULE_1___default.a,\n    alt: \"1234567890\"\n  }));\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Index);\n\n//# sourceURL=webpack:///./src/pages/message/index.jsx?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var antd__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! antd */ \"antd\");\n/* harmony import */ var antd__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(antd__WEBPACK_IMPORTED_MODULE_1__);\n\n\n\nvar Index = function Index(props) {\n  var jumpHome = function jumpHome() {\n    props.history.push(\"/menu/home\");\n  };\n\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"div\", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(antd__WEBPACK_IMPORTED_MODULE_1__[\"Result\"], {\n    status: \"404\",\n    title: \"404\",\n    subTitle: \"Sorry, the page you visited does not exist.\",\n    extra: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(antd__WEBPACK_IMPORTED_MODULE_1__[\"Button\"], {\n      onClick: jumpHome,\n      type: \"primary\"\n    }, \"Back Home\")\n  }));\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Index);\n\n//# sourceURL=webpack:///./src/pages/404/index.js?");
 
 /***/ })
 

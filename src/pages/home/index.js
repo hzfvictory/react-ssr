@@ -2,16 +2,19 @@ import React, {Fragment, useState, useEffect} from "react"
 import {Table, Avatar} from "antd"
 import {Link} from "react-router-dom"
 import {Helmet} from 'react-helmet';
-import {useFetch} from "@/hooks"
+import {connect} from "react-redux"
 import useStyles from 'isomorphic-style-loader/useStyles'
 import styles from "./index.css"
+import axios from "axios"
 
 
 const Index = (props) => {
+  const {menuHome, dispatch, loading: {effects}} = props;
   const [current, setCurrent] = useState(1)
-  const [{data, isLoading}, setUrl] = useFetch('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true', {})
-
   useStyles(styles)
+
+  // console.log(props);
+
 
   const columns = [
     {
@@ -56,11 +59,27 @@ const Index = (props) => {
       console.log(selectedRowKeys, selectedRows);
     }
   };
-  const handleChange = (current) => {
+  const handleChange = async (current) => {
     setCurrent(current)
     const cur = current - 1
-    setUrl(`https://api.justcome.cn/admin/1068068178288054272/scenics?offset=${cur}&limit=10&includeShop=true`)
+    const {data: {data, total}} = await axios(`https://api.justcome.cn/admin/1068068178288054272/scenics?offset=${cur}&limit=10&includeShop=true`)
+    dispatch({
+      type: "menuHome/getData",
+      payload: data,
+      total
+    });
   }
+
+  //
+  // useEffect(async () => {
+  //   const {dispatch} = props;
+  //   const {data: {data}} = await axios('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true')
+  //
+  //   dispatch({
+  //     type: "menuHome/getData",
+  //     payload: data
+  //   });
+  // }, [])
 
   return (
     <Fragment>
@@ -69,7 +88,24 @@ const Index = (props) => {
         <meta name="description" content="这里是禾口和react-ssr的调研"/>
       </Helmet>
 
-      <h1 className={styles.hhh}>测1试</h1>
+      <Table rowSelection={rowSelection}
+             locale={{emptyText: '暂无数据'}}
+             rowKey="id"
+             dataSource={menuHome.data}
+             columns={columns}
+             loading={effects['menuHome/getData']}
+             pagination={{
+               showTotal(total) {
+                 return `总共${total}条`
+               },
+               pageSize: 10,
+               total: menuHome.total,
+               current,
+               onChange: handleChange
+             }}
+      />
+
+      <h1 className={styles.hhh}>这几个公用的这个页面 redux 数据一样</h1>
       <h1 style={{color: 'red'}}>测11112试</h1>
       <ul>
         <li>9999999999</li>
@@ -85,25 +121,17 @@ const Index = (props) => {
         <li>1121212121212</li>
         <li>1121212121212</li>
       </ul>
-      <Table rowSelection={rowSelection}
-             locale={{emptyText: '暂无数据'}}
-             rowKey="id"
-             dataSource={data.data}
-             columns={columns}
-             loading={isLoading}
-             pagination={{
-               showTotal(total) {
-                 return `总共${total}条`
-               },
-               pageSize: 10,
-               total: data.total,
-               current,
-               onChange: handleChange
-             }}
-      />
     </Fragment>
   )
 }
 
+Index.loadData = async (store) => {
+  const {data: {data, total}} = await axios('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true')
+  store.dispatch({
+    type: "menuHome/getData",
+    payload: data,
+    total
+  });
+}
 
-export default Index
+export default connect(({menuHome, loading}) => ({menuHome, loading}))(Index)
