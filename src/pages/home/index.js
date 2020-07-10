@@ -1,10 +1,10 @@
-import React, {Fragment, useState, useEffect} from "react"
+import React, {Fragment, useState} from "react"
 import {Table, Avatar} from "antd"
 import {Link} from "react-router-dom"
 import {Helmet} from 'react-helmet';
 import {connect} from "react-redux"
 import useStyles from 'isomorphic-style-loader/useStyles'
-import styles from "./index.css"
+import styles from "./index.less"
 import axios from "axios"
 
 
@@ -80,7 +80,9 @@ const Index = (props) => {
   //     payload: data
   //   });
   // }, [])
-
+  const handleClick = () => {
+    console.log(1212);
+  }
   return (
     <Fragment>
       <Helmet>
@@ -105,8 +107,8 @@ const Index = (props) => {
              }}
       />
 
-      <h1 className={styles.hhh}>这几个公用的这个页面 redux 数据一样</h1>
-      <h1 style={{color: 'red'}}>测11112试</h1>
+      <h1 className={styles.homeTitlt}>默认为加载页 SEO中心 数据优先加载</h1>
+      <h1 style={{color: 'red'}} onClick={handleClick}>事件</h1>
       <ul>
         <li>9999999999</li>
         <li>1121212121212</li>
@@ -126,6 +128,8 @@ const Index = (props) => {
 }
 
 Index.loadData = async (store) => {
+  console.log(123456, '数据啊啊');
+
   const {data: {data, total}} = await axios('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true')
   store.dispatch({
     type: "menuHome/getData",

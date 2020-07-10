@@ -1,6 +1,5 @@
-ul li {
-    list-style-type: none;
-    text-align: left;
+ol li {
+    font-size: 16px;
 }
 
 h1 {

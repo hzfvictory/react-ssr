@@ -1,4 +1,6 @@
 import Koa from 'koa';
+import httpProxy from 'http-proxy-middleware';
+import k2c from "koa2-connect"
 import React from "react";
 import Router from "koa-router"
 import {renderToString} from 'react-dom/server';
@@ -8,20 +10,18 @@ import {renderRoutes, matchRoutes} from "react-router-config";
 import StyleContext from 'isomorphic-style-loader/StyleContext'
 import {Helmet} from 'react-helmet';
 import {Provider} from 'react-redux';
-import {getStore} from '@/models/dva';
 import routes from '@/router';
 import {renderHTML} from "./tem"
 
 const app = new Koa();
 const route = new Router()
 
-
 // 后台路由
 route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
+  const {getStore} = require('@/models/dva');
   const store = getStore();
   // 看看是否有这个路由
   const matchedRoutes = matchRoutes(routes.routes, ctx.path) || [];
-
   if (ctx.path === '/') {
     // 如果找不到，重定向到home页面
     ctx.response.redirect('/menu/home');
@@ -30,14 +30,21 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
 
   // 判断404
   let hasRoute = matchedRoutes.length === 1 && !!matchedRoutes[0].route.routes
-  if (hasRoute || !matchedRoutes.length) {
+  if (hasRoute || !matchedRoutes.length || typeof matchedRoutes[0].route === 'number') {
     ctx.response.redirect('/404');
     return;
   }
 
+  // 很重要【那几个页面需要服务端渲染，确保从别的页面进来，数据已经渲染好】
+  const Home = ['/menu/home'];
+
+  const routerAry = []
+  Home.map((item) => {
+    routerAry.push(...matchRoutes(routes.routes, item))
+  })
 
   const promises = [];
-  matchedRoutes.forEach(item => {
+  [...matchedRoutes, ...routerAry].forEach(item => {
     if (item.route.loadData) {
       const promise = new Promise((resolve, reject) => {
         // 这里用了.then 所以组件里面必须使用async或者promise
@@ -46,6 +53,7 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
       promises.push(promise);
     }
   });
+
   await Promise.all(promises).then(() => {
     const css = new Set(); // 防止钩子函数执行两次
     const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
@@ -64,12 +72,26 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
   })
 })
 
-
 // 中间件
 app.use(require('koa-static')(process.cwd() + '/static'));
+// 转发代理
+app.use(async (ctx, next) => {
+  if (ctx.url.startsWith('/api')) { //匹配有api字段的请求url
+    ctx.respond = false // 绕过koa内置对象response ，写入原始res对象，而不是koa处理过的response
+    await k2c(httpProxy({
+        target: 'https://api.justcome.cn/scenic/1/events?offset=0&limit=10&admin=true&status=all&start_status=all&type=all',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    ))(ctx, next);
+  }
+  await next()
+})
 app.use(route.routes());
 app.use(route.allowedMethods());
-
 
 Loadable.preloadAll().then(() => {
   const server = app.listen('8082', () => {

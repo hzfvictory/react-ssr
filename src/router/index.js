@@ -2,6 +2,7 @@ import withLoadable from "@/utils/withLoadable"
 
 
 import LoadHome from '@/pages/home'
+import LoadList from '@/pages/list'
 
 // const Login = withLoadable(() => import('@/pages/login'))
 import Login from '@/pages/login'
@@ -10,6 +11,7 @@ const Layout = withLoadable(() => import('@/layout'))
 const Layout1 = withLoadable(() => import('@/layout/menu2'))
 
 const Home = withLoadable(() => import('@/pages/home'))
+const List = withLoadable(() => import('@/pages/list'))
 const Message = withLoadable(() => import('@/pages/message'))
 
 const NotFound = withLoadable(() => import('@/pages/404'))
@@ -58,8 +60,8 @@ export default {
         {
           path: '/menu2/home',
           exact: true,
-          component: Home,
-          loadData: LoadHome.loadData,
+          component: List,
+          loadData: LoadList.loadData,
           title: '二级菜单首页',
         },
         {

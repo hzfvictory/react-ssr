@@ -7,6 +7,9 @@ import {connect} from 'react-redux'
 
 import styles from "./index.css"
 
+const baiduAry = ['内蒙古发生命案致3死 嫌犯81岁', '韩国首尔市长生前最后监控曝光', '《绿色背景四裸女》2.58亿成交', '杜海涛代言翻车姐姐骂受害人活该', '车险综合改革来了', '男子捞鱼被拽进洪水冲走', '男子花18元买鸡蛋砸奔驰赔2万', '台湾五粮液哥称大陆将出现粮荒']
+
+
 @withStyles(styles)
 @connect(({menuTree}) => ({
   ...menuTree
@@ -39,19 +42,19 @@ class Index extends Component {
         <Link to={'/menu/home'}> 起始页 </Link>
         <br/>
 
-        <Button onClick={this.resetRouter}>使劲点它</Button>
+        <Button onClick={this.resetRouter}>redux更改数据</Button>
 
         <h1>redux的数据{routes.length}</h1>
-        <ul>
-          <li>1121212121212</li>
-          <li>1121212121212</li>
-          <li>1121212121212</li>
-          <li>1121212121212</li>
-          <li>1121212121212</li>
-          <li>1121212121212</li>
-          <li>1121212121212</li>
-          <li>1121212121212</li>
-        </ul>
+
+        <ol>
+          {
+            baiduAry.map((item) => {
+              return (
+                <li key={item}>{item}</li>
+              )
+            })
+          }
+        </ol>
       </Fragment>
     )
   }

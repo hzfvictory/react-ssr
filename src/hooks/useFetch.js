@@ -9,7 +9,7 @@ const fetchTimeout = (url, init, timeout = 30000) => {
   ).then(response => response.json());
 };
 
-const useFetch = (initialUrl, initialData) => {
+const useFetch = (initialUrl, initialData = {data: []}) => {
 
   const [data, setData] = useState(initialData);
   const [url, setUrl] = useState(initialUrl);

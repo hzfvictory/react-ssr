@@ -96,6 +96,9 @@ class Layouts extends React.Component {
             <Menu.Item key="/login" icon={<SettingOutlined/>}>
               login
             </Menu.Item>
+            <Menu.Item key="/404" icon={<SettingOutlined/>}>
+              404
+            </Menu.Item>
           </Menu>
         </Header>
 
