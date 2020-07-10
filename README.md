@@ -16,7 +16,10 @@ react react-router-dom dva-core
 路由按需加载
 
 
-### React SSR
+
+## 正片：
+
+## React SSR
 
 传统CSR的弊端：
 
@@ -30,7 +33,7 @@ SSR的出现，就是为了解决这些传统CSR的弊端。
 ### 方案筛选
 
 - [nextjs]([https://nextjs.frontendx.cn/docs/#%E5%AE%89%E8%A3%85](https://nextjs.frontendx.cn/docs/#安装)),成本低，安心的写页面就行了，无需过多关心服务端路由
-- 秉承学习的态度，了解下原理，从一开始就选择了自己去搭，（中间断了一段时间，现在又重新拾起来），曾经看到有人用react + redux + Express搭SSR的文章，所以基于对Dva的熟悉与钟爱，就直接选择了这个方案。[从零到一搭建React SSR工程架构](http://blog.poetries.top/2018/11/18/react-ssr/?utm_source=tuicool&utm_medium=referral)
+- 秉承学习的态度，了解下原理，选择了自己去搭，（中间断了一段时间，现在又重新拾起来），曾经看到有人用react + redux + Express 搭SSR的文章，所以基于对dva的熟悉与钟爱，就直接选择了dva-core做状态管理搭建。
 
 
 
@@ -233,7 +236,9 @@ app.listen('8082', () => {
 
 ### 同构
 
-要解决上面上面的问题，就需要同构了，所谓同构，通俗的讲，就是一套React代码在服务器上运行一遍，到达浏览器又运行一遍。服务端渲染完成页面结构，浏览器端渲染完成事件绑定。
+要解决上面上面的问题，就需要同构了，所谓同构，通俗的讲，就是一套React代码在服务器上运行一遍，到达浏览器又运行一遍。服务端渲染完成页面结构，浏览器端渲染完成事件绑定（客户端协调阶段时候会进行比对，如果一样则不渲染了）。
+
+
 
 #### 客户端针对路由打包JS
 
@@ -418,11 +423,11 @@ export const renderHTML = (content, store) => `
 
 
 
-### 样式问题处理
+### CSS样式问题处理
 
 
 
-正常的服务端渲染只是返回了 HTML 字符串，样式需要浏览器加载完 CSS 后才会加上，这个样式添加的过程就会造成页面的闪动，所以在服务端里面直接添加需要引用的CSS。
+正常的服务端渲染只是返回了 HTML 字符串，样式需要浏览器加载完 CSS 后才会加上，这个样式添加的过程就`会造成页面的闪动`，所以在服务端里面直接添加需要引用的CSS。
 
 我们不能再使用 style-loader 了，因为这个 webpack loader 会在编译时将样式模块载入到 HTML header 中。但是在服务端渲染环境下，没有 window 对象，style-loader 进而会报错。一般我们换用 isomorphic-style-loader ,同时 isomorphic-style-loader 也会解决页面样式闪动的问题，它的原理也不难理解：isomorphic-style-loader 利用 context API，在渲染页面组件时获取所有 React 组件的样式信息，在服务器端输出 html 字符串的同时，也将样式插入到 html 字符串当中，将结果一同传送到客户端。
 
@@ -657,13 +662,245 @@ class Index extends React.Component {}
 
 
 
-### 注水和脱水
-
-**涉及到数据的预获取。也是服务端渲染的真正意义。**
-
-在服务器端渲染时，首先服务端请求接口拿到数据，并处理准备好数据状态（如果使用 Redux，就是进行 store 的更新），为了减少客户端的请求，我们需要保留住这个状态。一般做法是在服务器端返回 HTML 字符串的时候，将数据 JSON.stringify 一并返回，这个过程，叫做脱水（dehydrate）；在客户端，就不再需要进行数据的请求了，可以直接使用服务端下发下来的数据，这个过程叫注水（hydrate）
 
 
+### SSR中异步数据的获取 + Dva的使用
+
+
+
+#### Dva的使用
+
+
+
+之前项目一直用的dva，这里直接使用的dva-core代替的redux；
+
+
+
+创建 `Store`：这一部分有坑，要注意避免，大家知道，客户端渲染中，用户的浏览器中永远只存在一个 `Store`，所以代码上你可以这么写
+
+```javascript
+const dvaApp = createApp({
+  initialState: {},
+  models: models,
+});
+const store = dvaApp.getStore();
+export default store;
+```
+
+
+
+然而在服务器端，这么写就有问题了，因为服务器端的 `Store` 是所有用户都要用的，如果像上面这样构建 `Store`，`Store` 变成了一个单例，所有用户共享 `Store`，显然就有问题了。所以在服务器端渲染中，`Store` 的创建应该像下面这样，返回一个函数，每个用户访问的时候，这个函数重新执行，为每个用户提供一个独立的 `Store`
+
+
+
+```javascript
+const dvaApp = createApp({
+  initialState: {},
+  models: models,
+});
+
+export const getStore =  () => {
+  return dvaApp.getStore();
+}
+```
+
+
+
+#### 数据获取
+
+
+
+`eact-router的解决方案是配置路由 `route-router-config`，结合 `matchRoutes`，找到页面上相关组件所需的请求接口的方法并执行请求。这就要求开发者通过路由配置信息，显式地告知服务端请求内容。
+
+
+
+**客户端路由改造**
+
+```javascript
+// router/index.js
+{
+  path: '/login',
+  exact: true,
+  component: Login,
+  loadData: Login.loadData, // 这里就是请求数据的方法
+  title: '登录页'
+}
+```
+
+
+
+```javascript
+// 客户端组件使用
+class Index extends Component {}
+
+Index.loadData = async (store) => {
+  store.dispatch({
+    type: "menuTree/reset",
+  });
+  console.log('我试试这个到底加载不');
+}
+export default Index
+```
+
+
+
+**服务端代码**
+
+
+
+```javascript
+// server/index.js
+
+// 获取请求的方法
+const promises = [];
+
+matchedRoutes.forEach(item => {
+  if (item.route.loadData) {
+    const promise = new Promise((resolve, reject) => {
+      // 这里用了.then 所以组件里面必须使用async或者promise
+      item.route.loadData(store).then(resolve).catch(reject)
+    })
+    promises.push(promise);
+  }
+});
+// 这里要注意的一个问题，你客户端的方法可能是异步的，会出现ctx.body 没有执行的问题，所以要把这个中间件设置为异步的
+
+// 为了确保组件的loadData的方法执行完毕
+await Promise.all(promises).then(() => {
+  const css = new Set(); // 防止钩子函数执行两次
+  const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
+  const helmet = Helmet.renderStatic();
+  const content = renderToString(
+    <Provider store={store}>
+        <StaticRouter location={ctx.path}>
+          <StyleContext.Provider value={{insertCss}}>
+            {renderRoutes(routes.routes)}
+          </StyleContext.Provider>
+        </StaticRouter>
+      </Provider>
+     )
+
+     ctx.body = renderHTML(content, store, css, helmet)
+})
+```
+
+
+
+
+
+#### 注水和脱水
+
+**涉及到数据的预获取，也是服务端渲染的真正意义。**
+
+上面的代码正常运行是没问题了，但是发现客户端和服务端的store，存在不同步的问题。
+
+其实也很好理解。当服务端拿到store并获取数据后，客户端的js代码又执行一遍，在客户端代码执行的时候又创建了一个空的store，两个store的数据不能同步。
+
+
+
+所以 在服务器端渲染时，首先服务端请求接口拿到数据，并处理准备好数据状态（如果使用 Redux，就是进行 store 的更新），为了减少客户端的请求，我们需要保留住这个状态。一般做法是在服务器端返回 HTML 字符串的时候，将数据 JSON.stringify 一并返回，这个过程，叫做注水；在客户端，就不再需要进行数据的请求了，可以直接使用服务端下发下来的数据，这个过程叫脱水。
+
+
+
+```javascript
+<script>
+   window.context = {
+   // 这里是注水
+   state: ${serialize(store.getState())}  // serialize 是为了防止xss的攻击
+}
+</script>
+```
+
+
+
+```javascript
+import {create} from 'dva-core';
+
+function createApp(opt) {
+  // .....
+  return app;
+}
+
+// 服务端的redux
+const dvaApp = createApp({
+  initialState: {},
+  models: models,
+});
+export const getStore = () => {
+  return dvaApp.getStore();
+}
+
+// 客户端的redux
+export const getClientStore = () => {
+  // 需要先拿到服务端的数据, 脱水
+  const initialState = window.context ? window.context.state : {};
+  const dvaClientApp = createApp({
+    initialState,
+    models: models,
+  });
+
+  return dvaClientApp.getStore();
+}
+```
+
+
+
+#### 配置代理
+
+服务端是没有域的存在，所以不会存在跨域的问题，但是在客户端还存在跨域的问题，所以还需要配置下代理；代码如下：
+
+```javascript
+import httpProxy from 'http-proxy-middleware';
+import k2c from "koa2-connect"
+
+// 转发代理
+app.use(async (ctx, next) => {
+  if (ctx.url.startsWith('/api')) { //匹配有api字段的请求url
+    ctx.respond = false // 绕过koa内置对象response ，写入原始res对象，而不是koa处理过的response
+    await k2c(httpProxy({
+        target: 'https://api.xxxxx.xxx',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    ))(ctx, next);
+  }
+  await next()
+})
+```
+
+
+
+还可以安装koa的代理模块 `koa2-proxy-middleware`,用法如下：
+
+```javascript
+const proxy = require('koa2-proxy-middleware');
+const options = {
+  targets: {
+    '/user': {
+      // this is option of http-proxy-middleware
+      target: 'http://localhost:3001', // target host
+      changeOrigin: true, // needed for virtual hosted sites
+    },
+    '/user/:id': {
+      target: 'http://localhost:3001',
+      changeOrigin: true,
+    },
+    '/api/*': {
+      target: 'http://localhost:3001',
+      changeOrigin: true,
+      pathRewrite: {
+        '/passager/xx': '/mPassenger/ee', // rewrite path
+      }
+    },
+  }
+}
+app.use(proxy(options));
+```
+
+源码也没几行，有兴趣可以看下[koa2-proxy-middleware](https://github.com/sunyongjian/koa2-proxy-middleware/blob/master/lib/index.js)
 
 
 
@@ -750,17 +987,32 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], (ctx) => {
 
 
 
-
-
 ### 请求token处理
 
 
 
-### 404
+### 404页面
+
+
+
+用`react-router-config`的`matchRoutes`方法，当捕获为空数组的时候，说明没有当前路由，跳转到404 页面，这里面有一个注意的点是，如说有二级或二级以上的路由，这个方法能捕获第一个路由的方法，所以要判断当前获取到的是不是一级路由，而且当前数据还不能为空。
+
+```javascript
+// server/index.js  
+// 判断404
+let hasRoute = matchedRoutes.length === 1 && !!matchedRoutes[0].route.routes
+if (hasRoute || !matchedRoutes.length) {
+  ctx.response.redirect('/404');
+  return;
+}
+// 添加 ‘/’ 重定向是一样的套路
+```
 
 
 
 ### 安全问题
+
+
 
 安全问题非常关键，尤其是涉及到服务端渲染，开发者要格外小心。这里提出一个点：我们前面提到了注水和脱水过程，其中的代码：
 
@@ -778,6 +1030,15 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], (ctx) => {
 
 
 
+### 优化
+
+1. 客户端js拆包，压缩代码
+2. 客户端打包的js带有hash后缀
+3. 使用copy-webpack-plugin，直接把需要的文件，打包到服务内。
+4. 中间件转发代理 跨域等
+
+
+
 ### 遇到的问题汇总
 
 
@@ -786,8 +1047,21 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], (ctx) => {
 2. 服务端导入css 的时候，css是有做hash 处理不能正确的加载css (cssmodules)
 3. 服务端导入css时发生在componentWillMount周期函数，不能在componentDidMount,此时已经到客户端了。
 4. koa的路由不像express那样不能直接使用 ***** ， （可能可以，在我这报错）
-5. 中间件的顺序问题
-6. react-helmet 使用时，服务端没有显示设置的title等信息。
+5. 中间件的顺序、和异步问 ctx.body=''   的问题
+6. react-helmet 使用时，服务端没有显示设置的title等信息
+7. 注水的时候，注意redux客户端和服务端的联系
+8. 注水异步加载的问题，promise.all()
+9. 客户端路由使用的history,跳转不访问koa的路由
+10. ssr 部署代码体积特别大 ,添加并发单独拆出
 
+
+
+### 参考文档
+
+[从零到一搭建React SSR工程架构](http://blog.poetries.top/2018/11/18/react-ssr/?utm_source=tuicool&utm_medium=referral)
+
+
+
+`喜欢的mark👍`
 
 
