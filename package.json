@@ -9,7 +9,8 @@
     "dev": "npm-run-all --parallel dev:**",
     "dev:build:client": "webpack --config config/webpack.client.js --watch",
     "dev:build:server": "webpack --config config/webpack.server.js --watch",
-    "dev:start": "nodemon ./dist/bundle.js"
+    "dev:start": "nodemon ./dist/bundle.js",
+    "pruduct": "pm2 start ./dist/bundle.js"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",

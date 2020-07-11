@@ -3,22 +3,22 @@ import httpProxy from 'http-proxy-middleware';
 import k2c from "koa2-connect"
 import React from "react";
 import Router from "koa-router"
-import {renderToString} from 'react-dom/server';
-import {StaticRouter} from 'react-router-dom';
+import { renderToString } from 'react-dom/server';
+import { StaticRouter } from 'react-router-dom';
 import Loadable from 'react-loadable';
-import {renderRoutes, matchRoutes} from "react-router-config";
+import { renderRoutes, matchRoutes } from "react-router-config";
 import StyleContext from 'isomorphic-style-loader/StyleContext'
-import {Helmet} from 'react-helmet';
-import {Provider} from 'react-redux';
+import { Helmet } from 'react-helmet';
+import { Provider } from 'react-redux';
 import routes from '@/router';
-import {renderHTML} from "./tem"
+import { renderHTML } from "./tem"
 
 const app = new Koa();
 const route = new Router()
 
 // 后台路由
 route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
-  const {getStore} = require('@/models/dva');
+  const { getStore } = require('@/models/dva');
   const store = getStore();
   // 看看是否有这个路由
   const matchedRoutes = matchRoutes(routes.routes, ctx.path) || [];
@@ -35,11 +35,12 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
     return;
   }
 
-  // 很重要【那几个页面需要服务端渲染，确保从别的页面进来，数据已经渲染好】
-  const Home = ['/menu/home'];
+  // 很重要【那几个页面一定需要服务端渲染，确保从别的页面进来，数据已经渲染好,还要保证如果是当前记得去重】
+  const SEOPAGE = ['/menu/home'];
 
+  const otherPage = SEOPAGE.filter((item => item !== ctx.path))
   const routerAry = []
-  Home.map((item) => {
+  otherPage.map((item) => {
     routerAry.push(...matchRoutes(routes.routes, item))
   })
 
@@ -61,7 +62,7 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
     const content = renderToString(
       <Provider store={store}>
         <StaticRouter location={ctx.path}>
-          <StyleContext.Provider value={{insertCss}}>
+          <StyleContext.Provider value={{ insertCss }}>
             {renderRoutes(routes.routes)}
           </StyleContext.Provider>
         </StaticRouter>
@@ -79,13 +80,13 @@ app.use(async (ctx, next) => {
   if (ctx.url.startsWith('/api')) { //匹配有api字段的请求url
     ctx.respond = false // 绕过koa内置对象response ，写入原始res对象，而不是koa处理过的response
     await k2c(httpProxy({
-        target: 'https://api.justcome.cn/scenic/1/events?offset=0&limit=10&admin=true&status=all&start_status=all&type=all',
-        changeOrigin: true,
-        secure: false,
-        pathRewrite: {
-          '^/api': ''
-        }
+      target: 'https://api.justcome.cn/scenic/1/events?offset=0&limit=10&admin=true&status=all&start_status=all&type=all',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {
+        '^/api': ''
       }
+    }
     ))(ctx, next);
   }
   await next()
@@ -94,8 +95,8 @@ app.use(route.routes());
 app.use(route.allowedMethods());
 
 Loadable.preloadAll().then(() => {
-  const server = app.listen('8082', () => {
-    const {port} = server.address();
+  const server = app.listen('9999', () => {
+    const { port } = server.address();
     console.log(`\x1B[33m\x1B[4mhttp://localhost:${port}\x1B[0m`)
   })
 });
