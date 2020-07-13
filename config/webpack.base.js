@@ -1,27 +1,41 @@
 const path = require('path')
+const {OUTPUTCLIENT} = require("./outputPath")
+
+const outputPath = `../${OUTPUTCLIENT}`
 const isEnvProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: isEnvProduction ? 'production' : 'development',
   module: {
-    rules: [{
-      test: /\.js|jsx$/,
-      loader: 'babel-loader',
-      exclude: /node_modules/,
-      options: {
-        presets: ['@babel/preset-react', ['@babel/preset-env', {
-          targets: {
-            browsers: ['last 2 versions']
-          }
-        }]],
-        plugins: [
-          ["@babel/plugin-proposal-decorators", {"legacy": true}],
-          ["@babel/plugin-proposal-class-properties", {"loose": true}],
-          // ["import", { "libraryName": "antd", "style": true }]
-          ["react-loadable/babel"]
-        ]
+    rules: [
+      {
+        test: /\.js|jsx$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        options: {
+          presets: ['@babel/preset-react', ['@babel/preset-env', {
+            targets: {
+              browsers: ['last 2 versions']
+            }
+          }]],
+          plugins: [
+            ["@babel/plugin-proposal-decorators", {"legacy": true}],
+            ["@babel/plugin-proposal-class-properties", {"loose": true}],
+            // ["import", { "libraryName": "antd", "style": true }]
+            ["react-loadable/babel"]
+          ]
+        }
+      },
+      {
+        test: /\.(png|jpeg|jpg|gif|svg)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 8000,
+          outputPath: outputPath + '/img',
+          publicPath: '/img'
+        }
       }
-    }]
+    ]
   },
   resolve: {
     alias: {

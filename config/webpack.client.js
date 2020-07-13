@@ -3,9 +3,11 @@ const merge = require('webpack-merge')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin');
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
+
 const config = require('./webpack.base')
 const {OUTPUTCLIENT} = require("./outputPath")
-
+const hasPublicPath = process.env.PUBLIC_PATH;
 
 const outputPath = `../${OUTPUTCLIENT}`
 // const externals = {
@@ -17,7 +19,7 @@ const clientConfig = {
   output: {
     filename: 'js/[name].[chunkhash:8].js', // 'index.[chunkhash:8].js',
     path: path.resolve(__dirname, outputPath), // 输出文件路径
-    publicPath: '/'
+    publicPath: hasPublicPath ? hasPublicPath : '/'
   },
   module: {
     rules: [
@@ -48,20 +50,11 @@ const clientConfig = {
           'less-loader',
         ]
       },
-
-      {
-        test: /\.(png|jpeg|jpg|gif|svg)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 8000,
-          outputPath: outputPath + '/img',
-          publicPath: '/img'
-        }
-      }
     ]
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new AntdDayjsWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         {from: path.resolve(__dirname, '../public/favicon.ico'), to: path.resolve(__dirname, outputPath + '/img')},
@@ -82,7 +75,7 @@ const clientConfig = {
       }),
     ],
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
       minSize: 30000,
       minChunks: 1,
       maxAsyncRequests: 5,
@@ -92,7 +85,7 @@ const clientConfig = {
         common: {
           name: 'common',
           chunks: 'all',
-          test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom|react-router-config)[\\/]/,
+          test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,
         },
         // 指定组件
         antd: {

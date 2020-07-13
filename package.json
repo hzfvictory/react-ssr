@@ -9,11 +9,15 @@
     "dev": "npm-run-all --parallel dev:**",
     "dev:build:client": "webpack --config config/webpack.client.js --watch",
     "dev:build:server": "webpack --config config/webpack.server.js --watch",
-    "dev:start": "nodemon ./dist/bundle.js",
+    "dev:start": "nodemon ./bundle/bundle.js",
+    "jingxiang": "npm-run-all --parallel jx:**",
+    "jx:build:client": "cross-env NODE_ENV=production  webpack --config config/webpack.client.js",
+    "jx:build:server": "cross-env NODE_ENV=production  webpack --config config/webpack.server.js",
+    "jx:start": "cross-env NODE_ENV=production nodemon  ./bundle/bundle.js",
     "pro": "npm-run-all --parallel pro:**",
-    "pro:build:client": "cross-env NODE_ENV=production webpack --config config/webpack.client.js",
-    "pro:build:server": "cross-env NODE_ENV=production webpack --config config/webpack.server.js",
-    "pruduct": "pm2 start ./dist/bundle.js"
+    "pro:build:client": "cross-env NODE_ENV=production PUBLIC_PATH=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/  webpack --config config/webpack.client.js",
+    "pro:build:server": "cross-env NODE_ENV=production  webpack --config config/webpack.server.js",
+    "product": "cross-env PUBLIC_PATH=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr nodemon  ./bundle/bundle.js"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
@@ -41,6 +45,7 @@
     "@babel/plugin-transform-runtime": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
     "@babel/register": "^7.10.3",
+    "antd-dayjs-webpack-plugin": "^1.0.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-import": "^1.13.0",
     "clean-webpack-plugin": "^3.0.0",

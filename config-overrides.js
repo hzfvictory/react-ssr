@@ -2,6 +2,7 @@ const path = require('path');
 const {override, addWebpackAlias, addDecoratorsLegacy} = require('customize-cra');
 const WebpackBar = require('webpackbar');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 
 const addCustomize = () => config => {
 
@@ -17,7 +18,8 @@ const addCustomize = () => config => {
       new WebpackBar({
         color: 'purple',
         name: 'ssr'
-      })
+      }),
+      new AntdDayjsWebpackPlugin()
     );
   }
   return config;

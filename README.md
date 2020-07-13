@@ -175,7 +175,7 @@ const serverConfig = {
   },
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, '../dist')
+    path: path.resolve(__dirname, '../bundle')
   }
 }
 
@@ -224,7 +224,7 @@ app.listen('8082', () => {
      //....
     "dev": "npm-run-all --parallel dev:build:server dev:start",
     "dev:build:server": "webpack --config config/webpack.server.js --watch",
-    "dev:start": "nodemon ./dist/bundle.js"
+    "dev:start": "nodemon ./bundle/bundle.js"
 }
 ```
 

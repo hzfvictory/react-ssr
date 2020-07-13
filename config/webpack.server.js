@@ -2,7 +2,7 @@ const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 const merge = require('webpack-merge')
 const config = require('./webpack.base')
-const {OUTPUTSERVER, OUTPUTCLIENT} = require("./outputPath")
+const {OUTPUTSERVER} = require("./outputPath")
 
 const outputPath = `../${OUTPUTSERVER}`
 
@@ -14,7 +14,7 @@ const serverConfig = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, outputPath),
-    publicPath: '/'  // **
+    publicPath: '/'  // ** 这里路径一点要搞对
   },
   module: {
     rules: [
@@ -29,15 +29,6 @@ const serverConfig = {
             }
           }
         ]
-      },
-      {
-        test: /\.(png|jpeg|jpg|gif|svg)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 8000,
-          outputPath: `../${OUTPUTCLIENT}/img`,
-          publicPath: '/img'
-        }
       }
     ]
   }

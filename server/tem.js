@@ -1,6 +1,8 @@
 const serialize = require('serialize-javascript');
 const glob = require('glob');
-//
+const hasPublicPath = process.env.PUBLIC_PATH || '';
+
+
 let main = glob.sync(process.cwd() + '/static/js/main.*.js');
 let antd = glob.sync(process.cwd() + '/static/js/antd.*.js');
 let common = glob.sync(process.cwd() + '/static/js/common.*.js');
@@ -9,7 +11,6 @@ let common = glob.sync(process.cwd() + '/static/js/common.*.js');
 let mian_url = main[0] && main[0].split('/')
 let antd_url = antd[0] && antd[0].split('/')
 let common_url = common[0] && common[0].split('/')
-
 
 export const renderHTML = (content, store, css, helmet) => `
   <!DOCTYPE html>
@@ -33,9 +34,16 @@ export const renderHTML = (content, store, css, helmet) => `
           state: ${serialize(store.getState())}
         }
       </script>
-      <script src=/js/${mian_url[mian_url.length - 1]}></script>
-      <script src=/js/${common_url[common_url.length - 1]}></script>
-      <script src=/js/${antd_url[antd_url.length - 1]}></script>
+      <script src=${hasPublicPath}/js/${mian_url[mian_url.length - 1]}></script>
+      <script src=${hasPublicPath}/js/${common_url[common_url.length - 1]}></script>
+      <script src=${hasPublicPath}/js/${antd_url[antd_url.length - 1]}></script>
       </body>
   </html>
 `
+
+
+/*
+<script src=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/js/${mian_url[mian_url.length - 1]}></script>
+<script src=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/js/${common_url[common_url.length - 1]}></script>
+<script src=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/js/${antd_url[antd_url.length - 1]}></script>
+* */

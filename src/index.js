@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 import {ConfigProvider} from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
-import 'moment/locale/zh-cn';
+import 'dayjs/locale/zh-cn'
 
 ReactDOM.render(
   <ConfigProvider

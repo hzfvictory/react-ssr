@@ -1,4 +1,4 @@
 module.exports = {
   OUTPUTCLIENT: 'static',
-  OUTPUTSERVER: 'dist'
+  OUTPUTSERVER: 'bundle'
 }

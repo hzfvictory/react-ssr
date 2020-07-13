@@ -7,6 +7,9 @@ import StyleContext from 'isomorphic-style-loader/StyleContext'
 import {Provider} from 'react-redux';
 import {getClientStore} from '@/models/dva';
 import routes from '@/router';
+import {ConfigProvider} from "antd";
+import zhCN from "antd/es/locale/zh_CN";
+import 'dayjs/locale/zh-cn'
 
 const insertCss = (...styles) => {
   const removeCss = styles.map(style => style._insertCss());
@@ -32,7 +35,11 @@ Loadable.preloadReady().then(() => {
   fn(
     <Provider store={getClientStore()}>
       <StyleContext.Provider value={{insertCss}}>
-        <App/>
+        <ConfigProvider
+          autoInsertSpaceInButton={true}
+          locale={zhCN}>
+          <App/>
+        </ConfigProvider>
       </StyleContext.Provider>
     </Provider>, document.getElementById('root'));
 })

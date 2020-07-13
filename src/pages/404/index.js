@@ -19,7 +19,8 @@ const Index = (props) => {
           <h1>404</h1>
           <div className={styles["he-exception-content-desc"]}>抱歉，你访问的页面不存在</div>
           <div className={styles["he-exception-content-actions"]}>
-            <Button type="primary" onClick={jumpHome}>返回首页
+            <Button type="primary" onClick={jumpHome}>
+              返回首页
             </Button>
           </div>
         </div>
