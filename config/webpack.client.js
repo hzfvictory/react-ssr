@@ -8,13 +8,11 @@ const {OUTPUTCLIENT} = require("./outputPath")
 
 
 const outputPath = `../${OUTPUTCLIENT}`
-
 // const externals = {
 //   antd: 'antd'
 // }
 
 const clientConfig = {
-  mode: 'development',
   entry: path.resolve(__dirname, '../client/index.js'),
   output: {
     filename: 'js/[name].[chunkhash:8].js', // 'index.[chunkhash:8].js',

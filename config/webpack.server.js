@@ -2,12 +2,12 @@ const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 const merge = require('webpack-merge')
 const config = require('./webpack.base')
-const { OUTPUTSERVER, OUTPUTCLIENT } = require("./outputPath")
+const {OUTPUTSERVER, OUTPUTCLIENT} = require("./outputPath")
 
 const outputPath = `../${OUTPUTSERVER}`
+
 const serverConfig = {
   target: 'node',
-  mode: 'development',
   // https://webpack.docschina.org/configuration/externals/
   externals: [nodeExternals()], // 为了忽略node_modules文件夹中的所有模块
   entry: path.resolve(__dirname, '../server/index.js'),

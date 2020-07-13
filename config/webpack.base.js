@@ -1,6 +1,8 @@
 const path = require('path')
+const isEnvProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
+  mode: isEnvProduction ? 'production' : 'development',
   module: {
     rules: [{
       test: /\.js|jsx$/,
