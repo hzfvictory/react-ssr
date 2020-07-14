@@ -16,8 +16,8 @@
     "jx:start": "cross-env NODE_ENV=production nodemon  ./bundle/bundle.js",
     "pro": "npm-run-all --parallel pro:**",
     "pro:build:client": "cross-env NODE_ENV=production PUBLIC_PATH=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/  webpack --config config/webpack.client.js",
-    "pro:build:server": "cross-env NODE_ENV=production  webpack --config config/webpack.server.js",
-    "product": "cross-env PUBLIC_PATH=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr nodemon  ./bundle/bundle.js"
+    "pro:build:server": "cross-env NODE_ENV=production webpack --config config/webpack.server.js",
+    "product": "cross-env PUBLIC_PATH=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr pm2 start ./bundle/bundle.js --name='react-ssr'"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
