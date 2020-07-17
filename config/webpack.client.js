@@ -8,6 +8,7 @@ const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 const config = require('./webpack.base')
 const {OUTPUTCLIENT} = require("./outputPath")
 const hasPublicPath = process.env.PUBLIC_PATH;
+const isEnvProduction = process.env.NODE_ENV === 'production';
 
 const outputPath = `../${OUTPUTCLIENT}`
 // const externals = {
@@ -26,7 +27,7 @@ const clientConfig = {
       {
         test: [/\.css|less$/],
         use: [
-          'isomorphic-style-loader',
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -67,7 +68,7 @@ const clientConfig = {
     // }),
   ],
   optimization: {
-    minimize: true,
+    minimize: isEnvProduction,
     minimizer: [
       new TerserPlugin({
         test: /\.js(\?.*)?$/i,

@@ -1,10 +1,7 @@
-import routes from '@/router';
-
-
 export default {
   namespace: 'menuTree',
   state: {
-    routes: routes.routes,
+    routes: []
   },
   effects: {
     * reset(payload, {call, put, select}) {

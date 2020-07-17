@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{476:function(e,n){e.exports="/img/cfc95342627b53f3c708bffc73fe2e02.jpeg"},481:function(e,n,t){"use strict";t.r(n);var c=t(0),a=t.n(c),r=t(476),f=t.n(r);n.default=function(){return a.a.createElement(c.Fragment,null,"message",a.a.createElement("img",{src:f.a,alt:"1234567890"}))}}}]);

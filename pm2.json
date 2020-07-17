@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "react-ssr",
+      "script": "./bundle/bundle.js",
+      "instances": 1,
+      "exec_mode": "cluster",
+      "env": {
+        "NODE_ENV": "production",
+        "PUBLIC_PATH": "https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr"
+      }
+    }
+  ]
+}

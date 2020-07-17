@@ -17,7 +17,7 @@
     "pro": "npm-run-all --parallel pro:**",
     "pro:build:client": "cross-env NODE_ENV=production PUBLIC_PATH=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/  webpack --config config/webpack.client.js",
     "pro:build:server": "cross-env NODE_ENV=production webpack --config config/webpack.server.js",
-    "product": "cross-env PUBLIC_PATH=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr pm2 start ./bundle/bundle.js --name='react-ssr'"
+    "product": "pm2 start pm2.json"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
@@ -26,16 +26,20 @@
     "@testing-library/user-event": "^7.1.2",
     "antd": "^4.3.5",
     "axios": "^0.19.2",
+    "classnames": "^2.2.6",
     "dva-core": "^2.0.2",
     "dva-loading": "^3.0.20",
+    "js-cookie": "^2.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
     "react-loadable": "^5.5.0",
     "react-redux": "^7.2.0",
+    "react-router": "^5.2.0",
     "react-router-config": "^5.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "serialize-javascript": "^4.0.0"
   },

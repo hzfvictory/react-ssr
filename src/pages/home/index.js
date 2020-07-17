@@ -1,12 +1,14 @@
-import React, {Fragment, useState} from "react"
+import React, {Fragment, useState, useEffect} from "react"
 import {Table, Avatar} from "antd"
 import {Link} from "react-router-dom"
 import {Helmet} from 'react-helmet';
 import {connect} from "react-redux"
 import useStyles from 'isomorphic-style-loader/useStyles'
-import styles from "./index.less"
-import axios from "axios"
+import axios from "axios";
+import cookie from 'js-cookie';
 
+
+import styles from "./index.less"
 
 const Index = (props) => {
   const {menuHome, dispatch, loading: {effects}} = props;
@@ -62,27 +64,29 @@ const Index = (props) => {
   const handleChange = async (current) => {
     setCurrent(current)
     const cur = current - 1
-    const {data: {data, total}} = await axios(`https://api.justcome.cn/admin/1068068178288054272/scenics?offset=${cur}&limit=10&includeShop=true`)
+
     dispatch({
       type: "menuHome/getData",
-      payload: data,
-      total
+      url: `offset=${cur}&limit=10&includeShop=true`
     });
   }
 
-  //
-  // useEffect(async () => {
-  //   const {dispatch} = props;
-  //   const {data: {data}} = await axios('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true')
-  //
-  //   dispatch({
-  //     type: "menuHome/getData",
-  //     payload: data
-  //   });
-  // }, [])
+
+  useEffect(() => {
+    if (menuHome.total) return;
+    const {dispatch} = props;
+    dispatch({
+      type: "menuHome/getData",
+      url: 'offset=0&limit=10&includeShop=true',
+    });
+  }, [])
+
   const handleClick = () => {
-    console.log(1212);
+    const expires = {expires: 1};
+    cookie.set('token', '添加cookie', expires);
+    console.log(cookie.get('token'));
   }
+
   return (
     <Fragment>
       <Helmet>
@@ -108,7 +112,7 @@ const Index = (props) => {
       />
 
       <h1 className={styles.homeTitlt}>默认为加载页 SEO中心 数据优先加载</h1>
-      <h1 style={{color: 'red'}} onClick={handleClick}>事件</h1>
+      <h1 style={{color: 'red'}} onClick={handleClick}>添加cookie</h1>
       <ul>
         <li>9999999999</li>
         <li>1121212121212</li>
@@ -128,12 +132,11 @@ const Index = (props) => {
 }
 
 Index.loadData = async (store) => {
-  console.log(123456, '数据啊啊');
-
+  console.log(666666, '数据啊啊');
   const {data: {data, total}} = await axios('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true')
   store.dispatch({
-    type: "menuHome/getData",
-    payload: data,
+    type: "menuHome/loadData",
+    data,
     total
   });
 }

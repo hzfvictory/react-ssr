@@ -27,7 +27,8 @@ const serverConfig = {
             options: {
               modules: true,
             }
-          }
+          },
+          'less-loader'  // 必须配置 不然会当成css,视觉可能看不出来，因为客户端配置了less
         ]
       }
     ]
