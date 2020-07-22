@@ -12,8 +12,7 @@ import {Helmet} from 'react-helmet';
 import {Provider} from 'react-redux';
 import routes from '@/router';
 import {getServerStore} from "@/models/dva"
-import {renderHTML} from "./tem"
-
+import {renderHTML} from "./template"
 // const open = require('open');
 const app = new Koa();
 const route = new Router()
@@ -63,7 +62,7 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
     }
   });
 
-  await Promise.all(promises).then(() => {
+  await Promise.all(promises).then(async () => {
     const css = new Set(); // 防止钩子函数执行两次
     const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
     const helmet = Helmet.renderStatic();

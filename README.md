@@ -425,7 +425,7 @@ Loadable.preloadAll().then(() => {
 ```
 
 ```javascript
-// server/tem.js
+// server/template.js
 const glob = require('glob');
 let project = glob.sync(process.cwd() + '/static/index.*.js');
 
