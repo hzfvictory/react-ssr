@@ -11,7 +11,7 @@ import StyleContext from 'isomorphic-style-loader/StyleContext'
 import {Helmet} from 'react-helmet';
 import {Provider} from 'react-redux';
 import routes from '@/router';
-import {createApp} from "@/models/dva"
+import {getServerStore} from "@/models/dva"
 import {renderHTML} from "./tem"
 
 // const open = require('open');
@@ -22,12 +22,8 @@ const route = new Router()
 // 后台路由
 route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
 
+  const store = getServerStore().getStore();
 
-  const app = createApp({initialState: {}});
-  app.start();
-  let store = app._store;
-
-  // store.push(Math.random() * 1000)
   // 看看是否有这个路由
   const matchedRoutes = matchRoutes(routes.routes, ctx.path) || [];
 
@@ -45,14 +41,16 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
   }
 
   // 很重要【那几个页面一定需要服务端渲染，确保从别的页面进来，数据已经渲染好,还要保证如果是当前记得去重】
-  // const SEOPAGE = ['/menu/home'];
-  const SEOPAGE = [];
+  const SEOPAGE = ['/menu/home'];
+  // const SEOPAGE = [];
 
-  const otherPage = SEOPAGE.filter((item => item !== ctx.path))
   const routerAry = []
-  otherPage.map((item) => {
-    routerAry.push(...matchRoutes(routes.routes, item))
-  })
+
+  SEOPAGE
+    .filter((item => item !== ctx.path))
+    .map((item) => {
+      routerAry.push(...matchRoutes(routes.routes, item))
+    })
 
   const promises = [];
   [...matchedRoutes, ...routerAry].forEach(item => {

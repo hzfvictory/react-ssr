@@ -6,18 +6,19 @@ import StyleContext from "isomorphic-style-loader/StyleContext";
 import routes from "./router"
 
 import {Provider} from 'react-redux'
-import {getStore} from './models/dva';
+import {getDefaultStore} from './models/dva';
 
+
+const store = getDefaultStore.getStore()
 
 const insertCss = (...styles) => {
   const removeCss = styles.map(style => style._insertCss && style._insertCss());
   return () => removeCss.forEach(dispose => dispose && dispose())
 }
 
-
 function App() {
   return (
-    <Provider store={getStore()}>
+    <Provider store={store}>
       <StyleContext.Provider value={{insertCss}}>
         <Router>
           <Switch>
