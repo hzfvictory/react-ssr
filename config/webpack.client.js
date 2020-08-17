@@ -27,7 +27,7 @@ const clientConfig = {
       {
         test: [/\.css|less$/],
         use: [
-          'style-loader',
+          'isomorphic-style-loader',
           {
             loader: 'css-loader',
             options: {
