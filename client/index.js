@@ -30,7 +30,7 @@ const App = () => {
 
 const isMarkupPresent = document.getElementById('root').hasChildNodes();
 
-let fn = isMarkupPresent ? ReactDom.render : ReactDom.hydrate
+let fn = isMarkupPresent ? ReactDom.render : ReactDom.render
 
 Loadable.preloadReady().then(() => {
   fn(

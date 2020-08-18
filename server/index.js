@@ -40,8 +40,8 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
   }
 
   // 很重要【那几个页面一定需要服务端渲染，确保从别的页面进来，数据已经渲染好,还要保证如果是当前记得去重】
-  const SEOPAGE = ['/menu/home'];
-  // const SEOPAGE = [];
+  // const SEOPAGE = ['/menu/home'];
+  const SEOPAGE = [];
 
   const routerAry = []
 
@@ -66,15 +66,11 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
     const css = new Set(); // 防止钩子函数执行两次
     const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
     const helmet = Helmet.renderStatic();
-    const content = renderToStaticMarkup(
+    const content = renderToString(
       <Provider store={store}>
         <StyleContext.Provider value={{insertCss}}>
           <StaticRouter location={ctx.path}>
-            <Switch>
-              <div>
                 {renderRoutes(routes.routes)}
-              </div>
-            </Switch>
           </StaticRouter>
         </StyleContext.Provider>
       </Provider>
