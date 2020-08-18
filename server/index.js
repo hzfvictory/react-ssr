@@ -5,14 +5,19 @@ import React from "react";
 import Router from "koa-router"
 import {renderToString, renderToStaticMarkup} from 'react-dom/server';
 import {StaticRouter, Switch} from 'react-router-dom';
-import Loadable from 'react-loadable';
 import {renderRoutes, matchRoutes} from "react-router-config";
 import StyleContext from 'isomorphic-style-loader/StyleContext'
 import {Helmet} from 'react-helmet';
 import {Provider} from 'react-redux';
+import Loadable from 'react-loadable';
+import {getBundles} from 'react-loadable/webpack';
+
 import routes from '@/router';
 import {getServerStore} from "@/models/dva"
 import {renderHTML} from "./template"
+
+const fs = require('fs');
+
 // const open = require('open');
 const app = new Koa();
 const route = new Router()
@@ -21,8 +26,10 @@ const route = new Router()
 // 后台路由
 route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
 
-  const store = getServerStore().getStore();
+  let rawdata = fs.readFileSync(process.cwd() + '/static/react-loadable.json');
+  let stats = JSON.parse(rawdata);
 
+  const store = getServerStore().getStore();
   // 看看是否有这个路由
   const matchedRoutes = matchRoutes(routes.routes, ctx.path) || [];
 
@@ -40,8 +47,8 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
   }
 
   // 很重要【那几个页面一定需要服务端渲染，确保从别的页面进来，数据已经渲染好,还要保证如果是当前记得去重】
-  // const SEOPAGE = ['/menu/home'];
-  const SEOPAGE = [];
+  const SEOPAGE = ['/menu/home'];
+  // const SEOPAGE = [];
 
   const routerAry = []
 
@@ -61,21 +68,28 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
       promises.push(promise);
     }
   });
-
   await Promise.all(promises).then(async () => {
     const css = new Set(); // 防止钩子函数执行两次
+    const modules = [];
+
     const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
     const helmet = Helmet.renderStatic();
     const content = renderToString(
-      <Provider store={store}>
-        <StyleContext.Provider value={{insertCss}}>
-          <StaticRouter location={ctx.path}>
+      <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+        <Provider store={store}>
+          <StyleContext.Provider value={{insertCss}}>
+            <StaticRouter location={ctx.path}>
+              <Switch>
                 {renderRoutes(routes.routes)}
-          </StaticRouter>
-        </StyleContext.Provider>
-      </Provider>
+              </Switch>
+            </StaticRouter>
+          </StyleContext.Provider>
+        </Provider>
+      </Loadable.Capture>
     )
-    ctx.body = renderHTML(content, store, css, helmet)
+
+    let bundles = getBundles(stats, modules);
+    ctx.body = renderHTML(content, store, css, helmet, bundles)
   })
 })
 

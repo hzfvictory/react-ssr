@@ -33,10 +33,11 @@ const MyLoadingComponent = ({isLoading, error}) => {
   }
 };
 
-const withLoadable = (comp) => {
+const withLoadable = (comp, modules) => {
   return Loadable({
     loader: comp,
-    loading: MyLoadingComponent
+    loading: MyLoadingComponent,
+    modules: modules && modules.split(',')
   })
 };
 export default withLoadable;

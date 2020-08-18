@@ -19,10 +19,10 @@ module.exports = {
             }
           }]],
           plugins: [
+            "react-loadable/babel",
             ["@babel/plugin-proposal-decorators", {"legacy": true}],
-            ["@babel/plugin-proposal-class-properties", {"loose": true}],
+            ["@babel/plugin-proposal-class-properties", {"loose": true}]
             // ["import", {"libraryName": "antd","libraryDirectory": 'es', "style": 'css'}]
-              ["react-loadable/babel"]
           ]
         }
       },

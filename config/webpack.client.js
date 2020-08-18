@@ -4,6 +4,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin');
 const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
+const {ReactLoadablePlugin} = require('react-loadable/webpack');
 
 const config = require('./webpack.base')
 const {OUTPUTCLIENT} = require("./outputPath")
@@ -27,7 +28,7 @@ const clientConfig = {
       {
         test: [/\.css|less$/],
         use: [
-          'isomorphic-style-loader',
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -63,9 +64,9 @@ const clientConfig = {
       ],
       options: {}
     }),
-    // new ReactLoadablePlugin({
-    //   filename: path.resolve(__dirname, outputPath + '/react-loadable.json'),
-    // }),
+    new ReactLoadablePlugin({
+      filename: path.resolve(__dirname, outputPath + '/react-loadable.json'),
+    }),
   ],
   optimization: {
     minimize: isEnvProduction,

@@ -12,7 +12,15 @@ let mian_url = main[0] && main[0].split('/')
 let antd_url = antd[0] && antd[0].split('/')
 let common_url = common[0] && common[0].split('/')
 
-export const renderHTML = (content, store, css, helmet) => `
+
+// 获取js
+const generateBundleScripts = (bundles) => {
+  return bundles.filter(bundle => bundle.file.endsWith('.js')).map(bundle => {
+    return `<script type="text/javascript" src=${bundle.publicPath}></script>\n`;
+  });
+}
+
+export const renderHTML = (content, store, css, helmet, bundles) => `
   <!DOCTYPE html>
     <html lang="zh-Hans-CN">
       <head>
@@ -34,6 +42,9 @@ export const renderHTML = (content, store, css, helmet) => `
           state: ${serialize(store.getState())}
         }
       </script>
+      
+      ${generateBundleScripts(bundles).join('\n')}
+      
       <script src=${hasPublicPath}/js/${mian_url[mian_url.length - 1]}></script>
       <script src=${hasPublicPath}/js/${common_url[common_url.length - 1]}></script>
       <script src=${hasPublicPath}/js/${antd_url[antd_url.length - 1]}></script>

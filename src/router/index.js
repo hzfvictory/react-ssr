@@ -1,20 +1,16 @@
 import withLoadable from "@/utils/withLoadable"
 
-
 import LoadHome from '@/pages/home'
 import LoadList from '@/pages/list'
+import LoadLogin from '@/pages/login'
 
-// const Login = withLoadable(() => import('@/pages/login'))
-import Login from '@/pages/login'
-
-const Layout = withLoadable(() => import('@/layout'))
-const Layout1 = withLoadable(() => import('@/layout/menu2'))
-
-const Home = withLoadable(() => import('@/pages/home'))
-const List = withLoadable(() => import('@/pages/list'))
-const Message = withLoadable(() => import('@/pages/message'))
-
-const NotFound = withLoadable(() => import('@/pages/404'))
+const Layout = withLoadable(() => import('@/layout'), '@/layout')
+const Layout1 = withLoadable(() => import('@/layout/menu2'), '@/layout/menu2')
+const Home = withLoadable(() => import('@/pages/home'), '@/pages/home')
+const List = withLoadable(() => import ('@/pages/list'), '@/pages/list')
+const Message = withLoadable(() => import('@/pages/message'), '@/pages/message')
+const Login = withLoadable(() => import('@/pages/login'), '@/pages/login')
+const NotFound = withLoadable(() => import('@/pages/404'), '@/pages/404')
 
 
 export default {
@@ -23,7 +19,7 @@ export default {
       path: '/login',
       exact: true,
       component: Login,
-      loadData: Login.loadData,
+      loadData: LoadLogin.loadData,
       title: '登录页'
     },
     {
