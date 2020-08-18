@@ -15,9 +15,15 @@ let common_url = common[0] && common[0].split('/')
 
 // 获取js
 const generateBundleScripts = (bundles) => {
-  return bundles.filter(bundle => bundle.file.endsWith('.js')).map(bundle => {
+  let result = bundles.filter(bundle => bundle.file.endsWith('.js')).map(bundle => {
     return `<script type="text/javascript" src=${bundle.publicPath}></script>\n`;
   });
+
+  let hasMain = result.find((item => item.includes(mian_url[mian_url.length - 1])));
+
+  !hasMain && result.push(`<script type="text/javascript" src=${hasPublicPath}/js/${mian_url[mian_url.length - 1]}></script>\n`)
+
+  return result
 }
 
 export const renderHTML = (content, store, css, helmet, bundles) => `
@@ -41,7 +47,8 @@ export const renderHTML = (content, store, css, helmet, bundles) => `
         window.context = {
           state: ${serialize(store.getState())}
         }
-      </script>
+      </script> 
+      
       ${generateBundleScripts(bundles).join('\n')}
       <script src=${hasPublicPath}/js/${common_url[common_url.length - 1]}></script>
       <script src=${hasPublicPath}/js/${antd_url[antd_url.length - 1]}></script>

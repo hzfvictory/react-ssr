@@ -1,5 +1,10 @@
 import withLoadable from "@/utils/withLoadable"
 
+// https://www.cnblogs.com/kaishirenshi/p/9971307.html
+
+// import LoadMessage from '@/pages/message'
+// import Load404 from '@/pages/404'
+
 import LoadHome from '@/pages/home'
 import LoadList from '@/pages/list'
 import LoadLogin from '@/pages/login'
