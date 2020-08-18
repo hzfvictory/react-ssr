@@ -42,10 +42,7 @@ export const renderHTML = (content, store, css, helmet, bundles) => `
           state: ${serialize(store.getState())}
         }
       </script>
-      
       ${generateBundleScripts(bundles).join('\n')}
-      
-      <script src=${hasPublicPath}/js/${mian_url[mian_url.length - 1]}></script>
       <script src=${hasPublicPath}/js/${common_url[common_url.length - 1]}></script>
       <script src=${hasPublicPath}/js/${antd_url[antd_url.length - 1]}></script>
       </body>
