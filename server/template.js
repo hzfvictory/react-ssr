@@ -34,7 +34,7 @@ export const renderHTML = (content, store, css, helmet, bundles) => `
         <title>默认的title</title>
         ${helmet.title.toString()}
         ${helmet.meta.toString()}
-         <link rel="stylesheet" href=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/css/antd.compact.min.css >
+         <link rel="stylesheet" href=https://cdn.jsdelivr.net/gh/hzfvictory/cdn/ssr/css/antd.min.css >
         <link rel="stylesheet" href=/css/index.css >
         <link rel="shortcut icon" href=/img/favicon.ico >
         <style>
