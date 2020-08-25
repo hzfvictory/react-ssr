@@ -42,7 +42,7 @@ class Layouts extends React.Component {
   curRoute = (type) => {
     const {route} = this.state;
     const {location: {pathname}} = this.props;
-    const result = route.find((item) => item.path === pathname);
+    const result = route.find((item) => pathname.includes(item.meta.path || item.path));
     return result[type]
   }
 
@@ -107,7 +107,7 @@ class Layouts extends React.Component {
           {/*面包屑*/}
           <Breadcrumb style={{margin: '16px 0'}}>
             <Breadcrumb.Item href={"/menu/home"}>首页</Breadcrumb.Item>
-            <Breadcrumb.Item>{this.curRoute('f_title')}</Breadcrumb.Item>
+            {/*<Breadcrumb.Item>{this.curRoute('f_title')}</Breadcrumb.Item>*/}
             <Breadcrumb.Item>{this.curRoute('title')}</Breadcrumb.Item>
           </Breadcrumb>
           {/*操作展示区域*/}

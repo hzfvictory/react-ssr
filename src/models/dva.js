@@ -34,7 +34,7 @@ export const getClientStore = () => {
     initialState,
   });
 
-  delete window.context;
+  // delete window.context;
 
   return dvaClientApp;
 }

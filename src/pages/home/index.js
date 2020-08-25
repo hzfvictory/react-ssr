@@ -4,9 +4,8 @@ import {Link} from "react-router-dom"
 import {Helmet} from 'react-helmet';
 import {connect} from "react-redux"
 import useStyles from 'isomorphic-style-loader/useStyles'
-import axios from "axios";
 import cookie from 'js-cookie';
-
+import qs from "querystring"
 
 import styles from "./index.less"
 
@@ -15,8 +14,14 @@ const Index = (props) => {
   const [current, setCurrent] = useState(1)
   useStyles(styles)
 
-  // console.log(props);
-
+  useEffect(() => {
+    window.scroll(0, 0);
+    const {dispatch} = props;
+    dispatch({
+      type: "menuHome/getData",
+      url: 'offset=0&limit=10&includeShop=true',
+    });
+  }, []);
 
   const columns = [
     {
@@ -28,8 +33,8 @@ const Index = (props) => {
     {
       title: '名称',
       dataIndex: 'name',
-      render: (text) => {
-        return <a>{text}</a>
+      render: (text, record) => {
+        return <Link to={`/menu/scenicid/detail/${record.id}`}>{text}</Link>
       }
     },
     {
@@ -49,9 +54,9 @@ const Index = (props) => {
     },
     {
       title: '操作',
-      render: () => {
+      render: (record) => {
         return (
-          <Link to="/menu/message">编辑</Link>
+          <Link to={`/menu/scenicid/detail/${record.id}`}>编辑</Link>
         )
       }
     },
@@ -63,23 +68,13 @@ const Index = (props) => {
   };
   const handleChange = async (current) => {
     setCurrent(current)
-    const cur = current - 1
+    const cur = (current - 1) * 10
 
     dispatch({
       type: "menuHome/getData",
       url: `offset=${cur}&limit=10&includeShop=true`
     });
-  }
-
-
-  useEffect(() => {
-    if (menuHome.total) return;
-    const {dispatch} = props;
-    dispatch({
-      type: "menuHome/getData",
-      url: 'offset=0&limit=10&includeShop=true',
-    });
-  }, [])
+  };
 
   const handleClick = () => {
     const expires = {expires: 1};
@@ -131,13 +126,14 @@ const Index = (props) => {
   )
 }
 
-Index.loadData = async (store) => {
-  console.log(666666, '数据啊啊');
-  const {data: {data, total}} = await axios('https://api.justcome.cn/admin/1068068178288054272/scenics?offset=0&limit=10&includeShop=true')
-  store.dispatch({
-    type: "menuHome/loadData",
-    data,
-    total
+Index.loadData = async (store, ctx) => {
+  console.log(ctx, '首页数据啊啊');
+  let url = ctx.url.split('?')[1]
+  const {limit = 10} = qs.parse(url);
+
+  await store.dispatch({
+    type: "menuHome/getData",
+    url: `offset=0&limit=${limit}&includeShop=true`,
   });
 }
 

@@ -47,8 +47,8 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
   }
 
   // 很重要【那几个页面一定需要服务端渲染，确保从别的页面进来，数据已经渲染好,还要保证如果是当前记得去重】
-  const SEOPAGE = ['/menu/home'];
-  // const SEOPAGE = [];
+  // const SEOPAGE = ['/menu/home'];
+  const SEOPAGE = [];
 
   const routerAry = []
 
@@ -63,7 +63,12 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
     if (item.route.loadData) {
       const promise = new Promise((resolve, reject) => {
         // 这里用了.then 所以组件里面必须使用async或者promise
-        item.route.loadData(store).then(resolve).catch(reject)
+        let params = {
+          url: ctx.url,
+          route: item.route.path
+        };
+
+        item.route.loadData(store, params).then(resolve).catch(reject)
       })
       promises.push(promise);
     }

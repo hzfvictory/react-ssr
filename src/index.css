@@ -1,0 +1,14 @@
+
+.ant-descriptions-row > td {
+    vertical-align: top;
+    padding-right: 10px;
+}
+
+.ant-descriptions-title {
+    margin-bottom: 18px;
+    font-size: 16px;
+}
+
+.ant-descriptions-item-label {
+    font-weight: bolder;
+}
