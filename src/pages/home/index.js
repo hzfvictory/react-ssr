@@ -9,6 +9,15 @@ import qs from "querystring"
 
 import styles from "./index.less"
 
+const queryData = async (dispatch, params = {}, immediately) => {
+  const {offset = 0, limit = 10} = params
+  await dispatch({
+    type: "menuHome/getData",
+    url: `offset=${offset}&limit=${limit}&includeShop=true`,
+    immediately: immediately
+  });
+};
+
 const Index = (props) => {
   const {menuHome, dispatch, loading: {effects}} = props;
   const [current, setCurrent] = useState(1)
@@ -17,10 +26,10 @@ const Index = (props) => {
   useEffect(() => {
     window.scroll(0, 0);
     const {dispatch} = props;
-    dispatch({
-      type: "menuHome/getData",
-      url: 'offset=0&limit=10&includeShop=true',
-    });
+    queryData(dispatch)
+    return () => {
+      queryData(dispatch, {}, false)
+    }
   }, []);
 
   const columns = [
@@ -72,7 +81,8 @@ const Index = (props) => {
 
     dispatch({
       type: "menuHome/getData",
-      url: `offset=${cur}&limit=10&includeShop=true`
+      url: `offset=${cur}&limit=10&includeShop=true`,
+      immediately: true
     });
   };
 
@@ -130,11 +140,7 @@ Index.loadData = async (store, ctx) => {
   console.log(ctx, '首页数据啊啊');
   let url = ctx.url.split('?')[1]
   const {limit = 10} = qs.parse(url);
-
-  await store.dispatch({
-    type: "menuHome/getData",
-    url: `offset=0&limit=${limit}&includeShop=true`,
-  });
+  await queryData(store.dispatch, {limit}, true)
 }
 
 export default connect(({menuHome, loading}) => ({menuHome, loading}))(Index)

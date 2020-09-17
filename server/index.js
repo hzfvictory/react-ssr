@@ -39,14 +39,18 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
     return;
   }
 
+
   // 判断404
+  // 如果为一级路由，length=1，routes为空的话说明下面没有二级路由，有则去404
   let hasRoute = matchedRoutes.length === 1 && !!matchedRoutes[0].route.routes
-  if (hasRoute || !matchedRoutes.length || typeof matchedRoutes[0].route === 'number') {
+
+  if (hasRoute || !matchedRoutes.length) {
+    // || typeof matchedRoutes[0].route === 'number'
     ctx.response.redirect('/404');
     return;
   }
 
-  // 很重要【那几个页面一定需要服务端渲染，确保从别的页面进来，数据已经渲染好,还要保证如果是当前记得去重】
+  // 【慎用】指定哪几个页面在需要服务端渲染（加快响应速度），确保从别的页面进来，数据已经渲染好,还要保证保证当前页面不重复请求
   // const SEOPAGE = ['/menu/home'];
   const SEOPAGE = [];
 
@@ -67,7 +71,7 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
           url: ctx.url,
           route: item.route.path
         };
-
+        // 请求数据
         item.route.loadData(store, params).then(resolve).catch(reject)
       })
       promises.push(promise);
@@ -79,7 +83,7 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
 
     const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
     const helmet = Helmet.renderStatic();
-    const content = renderToString(
+    const content = renderToStaticMarkup(
       <Loadable.Capture report={moduleName => modules.push(moduleName)}>
         <Provider store={store}>
           <StyleContext.Provider value={{insertCss}}>
@@ -92,7 +96,7 @@ route.get(["/:route?", /\/([\w|\d]+)\/.*/], async (ctx) => {
         </Provider>
       </Loadable.Capture>
     )
-
+    //  使用 loadable 做按需加载,当前的js优先加载
     let bundles = getBundles(stats, modules);
     ctx.body = renderHTML(content, store, css, helmet, bundles)
   })
